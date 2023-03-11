@@ -1,4 +1,4 @@
-# rfid-online-attendance-system
+# RFID-Online-Attendance-System
 <h2>Components</h2>
 <ul>
   <li>NodeMCU ESP8266</li>
