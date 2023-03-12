@@ -8,8 +8,8 @@
 RFID rfid(D8, D0);       //D8:pin of tag reader SDA. D0:pin of tag reader RST 
 unsigned char str[MAX_LEN]; //MAX_LEN is 16: size of the array 
 
-const char ssid[] = "tenda";
-const char pass[] = "whatsapp";
+const char ssid[] = "TP-Link_6104";
+const char pass[] = "nfridoy12345";
 
 String uidPath= "/";
 //Define FirebaseESP8266 data object

@@ -37,23 +37,48 @@ unsigned long lastMillis = 0;
 String alertMsg;
 String device_id="Gate101";
 boolean checkIn = true;
+int star=0;
 
 void connect() {
   Serial.print("\nChecking wifi...");
+  lcd.setCursor(1,0); 
+  lcd.print("CHECKING WIFI...");
   while (WiFi.status() != WL_CONNECTED) {
+    lcd.setCursor(1,star); 
     Serial.print(".");
+    lcd.print("*");
+    delay(1000);
+    star=star+1;
+  }
+
+  Serial.println("\n Connected!");
+  lcd.setCursor(1,0); 
+  lcd.print("CONNECTED!");
+}
+/*
+void connect() {
+  Serial.print("\nChecking wifi...");
+  lcd.setCursor(1,0); 
+  lcd.print("CHECKING WIFI...");
+  while (WiFi.status() != WL_CONNECTED) {
+    lcd.setCursor(1,0); 
+    Serial.print(".");
+    lcd.print("*");
     delay(1000);
   }
 
   Serial.println("\n Connected!");
+  lcd.setCursor(1,0); 
+  lcd.print("CONNECTED!");
 }
-
+*/
 void sarvox() {
   Serial.print("\nGate Opening");
   Servo1.write(180);
   digitalWrite(BUZ_PIN, HIGH);
-  delay(2000);
+  delay(500);
   digitalWrite(BUZ_PIN, LOW);
+  delay(4000);
   Servo1.write(0);
   Serial.print("\nGate Closing");
   delay(500);
@@ -61,13 +86,15 @@ void sarvox() {
 
 void setup()
 {
+  Serial.begin(115200);
+  WiFi.begin(ssid, pass);
+  
   Servo1.attach(servoPin); 
   Servo1.write(0);
 
   pinMode(BUZ_PIN, OUTPUT);
 
-  Serial.begin(115200);
-  WiFi.begin(ssid, pass);
+  
 
   //pinMode(red, OUTPUT);
   //pinMode(green, OUTPUT);
@@ -98,7 +125,7 @@ void checkAccess (String temp)    //Function to check if an identified tag is re
           
           lcd.setCursor(2,1);   
           lcd.print(alertMsg);
-          delay(1000);
+          delay(4000);
 
           //json.add("time", String(timeClient.getFormattedDate()));
           json.add("time", String(timeClient.getFormattedTime()));
@@ -121,7 +148,7 @@ void checkAccess (String temp)    //Function to check if an identified tag is re
           
           lcd.setCursor(2,1);   
           lcd.print(alertMsg);
-          delay(1000);
+          delay(4000);
 
           Firebase.setInt(firebaseData, uidPath+"/users/"+temp,0);
           
@@ -140,10 +167,23 @@ void checkAccess (String temp)    //Function to check if an identified tag is re
     else
     {
       Serial.println("FAILED");
-      digitalWrite(BUZ_PIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+      lcd.setCursor(1,0);   
+      lcd.print("FAILED");
       lcd.setCursor(2,1);   
       lcd.print("UNAUTHORIZED");
-      delay(500);                      // wait for a second
+      digitalWrite(BUZ_PIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+      delay(300); 
+      digitalWrite(BUZ_PIN, LOW);   // turn the LED off by making the voltage LOW
+      delay(300); 
+      digitalWrite(BUZ_PIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+      delay(300); 
+      digitalWrite(BUZ_PIN, LOW);   // turn the LED off by making the voltage LOW
+      delay(300); 
+      lcd.setCursor(1,0);   
+      lcd.print("FAILED");
+      lcd.setCursor(2,1);   
+      lcd.print("UNAUTHORIZED");
+      delay(4000);                      // wait for a second
       digitalWrite(BUZ_PIN, LOW);   // turn the LED off by making the voltage LOW
       delay(500);  
       lcd.clear();
