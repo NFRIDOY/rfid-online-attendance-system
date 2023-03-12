@@ -41,19 +41,26 @@ int star=0;
 
 void connect() {
   Serial.print("\nChecking wifi...");
-  lcd.setCursor(1,0); 
+  lcd.setCursor(0,0); 
   lcd.print("CHECKING WIFI...");
   while (WiFi.status() != WL_CONNECTED) {
-    lcd.setCursor(1,star); 
     Serial.print(".");
+    lcd.clear();
+    lcd.setCursor(1,0); 
+    lcd.print("CHECKING WIFI..");
+    lcd.setCursor(star,1); 
     lcd.print("*");
-    delay(1000);
+    delay(200);
     star=star+1;
   }
 
+  lcd.clear();
   Serial.println("\n Connected!");
   lcd.setCursor(1,0); 
+  lcd.print("CHECKING WIFI...");
+  lcd.setCursor(1,1); 
   lcd.print("CONNECTED!");
+  delay(3000);
 }
 /*
 void connect() {
@@ -76,7 +83,7 @@ void sarvox() {
   Serial.print("\nGate Opening");
   Servo1.write(180);
   digitalWrite(BUZ_PIN, HIGH);
-  delay(500);
+  delay(1000);
   digitalWrite(BUZ_PIN, LOW);
   delay(4000);
   Servo1.write(0);
@@ -120,12 +127,15 @@ void checkAccess (String temp)    //Function to check if an identified tag is re
       
       if (firebaseData.intData() == 0)         //If firebaseData.intData() == checkIn
       {  
-          alertMsg="CHECKING IN";
-          sarvox();
+        
           
+          alertMsg="CHECKING IN";
           lcd.setCursor(2,1);   
           lcd.print(alertMsg);
-          delay(4000);
+          delay(2000);
+          sarvox();
+          
+          //delay(4000);
 
           //json.add("time", String(timeClient.getFormattedDate()));
           json.add("time", String(timeClient.getFormattedTime()));
@@ -143,12 +153,14 @@ void checkAccess (String temp)    //Function to check if an identified tag is re
       }
       else if (firebaseData.intData() == 1)   //If the lock is open then close it
       { 
-          alertMsg="CHECKING OUT";
           sarvox();
-          
+          alertMsg="CHECKING OUT";
+
           lcd.setCursor(2,1);   
           lcd.print(alertMsg);
-          delay(4000);
+          delay(2000);
+
+          //delay(4000);
 
           Firebase.setInt(firebaseData, uidPath+"/users/"+temp,0);
           
@@ -167,7 +179,7 @@ void checkAccess (String temp)    //Function to check if an identified tag is re
     else
     {
       Serial.println("FAILED");
-      lcd.setCursor(1,0);   
+      lcd.setCursor(1,1);   
       lcd.print("FAILED");
       lcd.setCursor(2,1);   
       lcd.print("UNAUTHORIZED");
@@ -179,7 +191,7 @@ void checkAccess (String temp)    //Function to check if an identified tag is re
       delay(300); 
       digitalWrite(BUZ_PIN, LOW);   // turn the LED off by making the voltage LOW
       delay(300); 
-      lcd.setCursor(1,0);   
+      lcd.setCursor(1,1);   
       lcd.print("FAILED");
       lcd.setCursor(2,1);   
       lcd.print("UNAUTHORIZED");
@@ -197,7 +209,10 @@ void loop() {
   if (rfid.findCard(PICC_REQIDL, str) == MI_OK)   //Wait for a tag to be placed near the reader
   { 
     Serial.println("Card found"); 
-    
+    /*lcd.clear();
+    lcd.setCursor(1,0); 
+    lcd.print("CARD FOUND!!!");
+    delay(1000);*/
     
     String temp = "";                             //Temporary variable to store the read RFID number
     if (rfid.anticoll(str) == MI_OK)              //Anti-collision detection, read tag serial number 
@@ -220,6 +235,6 @@ void loop() {
   lcd.setCursor(2,1);   
   lcd.print("GATE CLOSE");
   //Servo1.write(0); 
-  delay(500);
   lcd.clear();
+  delay(500);
 }
