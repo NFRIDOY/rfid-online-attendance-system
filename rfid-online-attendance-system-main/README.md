@@ -13,6 +13,7 @@
 ## CIRCUIT DIAGRAM
 
 ![](circuit.png)
+![](circuit2.png)
 
 
 ## WEB DASHBOARD
